@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <title>Scatter</title>
+  </head>
+  <body>
+
+    <style>
+
+      g.tick, path.domain, g line{
+        stroke:tomato;
+      }
+
+
+    </style>
+
+    <script>
+
+      // SVG
+
+      var width=500;
+      var height=500;
+
+      var svg=d3.select("body").append("svg").attr("width",width)
+      .attr("height",height).style("background","pink").style("padding","20px").
+      style("overflow","visible");
+
+          // Circles
+
+      myCars=[{"Model":"Camry","mpg":30,"speed":70},
+      {"Model":"Camry","mpg":25,"speed":60},
+      {"Model":"Lexus","mpg":20,"speed":60},
+      {"Model":"Lexus","mpg":35,"speed":70},
+      {"Model":"Impala","mpg":35,"speed":50}];
+
+      // Xscale
+
+      var MPGmax= d3.max(myCars,function(d){return d.mpg+5});
+      var MPGmin= d3.min(myCars,function(d){return d.mpg-5});
+
+      var scaleMPG=d3.scaleLinear().
+      domain([MPGmin,MPGmax])
+      .range([0,width]);
+
+      // Yscale
+
+      var Speedmax= d3.max(myCars,function(d){return d.speed+5});
+      var Speedmin= d3.min(myCars,function(d){return d.speed-5});
+
+      var scaleSpeed=d3.scaleLinear().
+      domain([Speedmin,Speedmax])
+      .range([0,width]);
+
+      var circle= svg.selectAll("circle").data(myCars);
+      circle.enter().append("circle")
+      .attr("cx",function(d){return scaleSpeed(d.speed);})
+      .attr("cy",function(d){return height-scaleMPG(d.mpg);})
+      .attr("r",10)
+      .style("fill",function(d){
+
+        if(d.Model=="Camry"){ return "Red";}
+        else if(d.Model=="Lexus"){ return "Green";}
+        else { return "Yellow";}
+
+
+      });
+
+      // X Axis
+
+      var xAxis=d3.axisBottom(scaleSpeed);
+      svg.append("g").attr("transform","translate(0,500)").call(xAxis);
+
+      // Y Axis
+
+      var yAxis=d3.axisLeft(scaleMPG);
+      svg.append("g").call(yAxis);
+
+
+
+    </script>
+
+  </body>
+</html>
